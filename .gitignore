@@ -1,2 +1,13 @@
 .DS_STORE
 env
+/infrastructure/terraform/dev
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+.venv/
+/data/sample
+/data/output

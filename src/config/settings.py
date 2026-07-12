@@ -1,0 +1,6 @@
+SOURCE_NAME = "synthea"
+SOURCE_VERSION = "v1"
+
+BRONZE_CONTAINER = "bronze"
+SILVER_CONTAINER = "silver"
+GOLD_CONTAINER = "gold"
