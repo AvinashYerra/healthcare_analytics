@@ -3,7 +3,7 @@ import sys
 from config.datasets import DATASETS
 from config.transformers import TRANSFORMERS
 
-from spark.session import get_spark
+from spark.session import create_spark_session as get_spark
 from spark.BronzeReader import BronzeReader
 from spark.SilverWriter import SilverWriter
 

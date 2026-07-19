@@ -9,7 +9,7 @@ from quality.data_quality import (
 )
 
 
-class PatientTransformer(BaseTransformer):
+class EncounterTransformer(BaseTransformer):
 
     def clean(self, df: DataFrame):
         df = remove_duplicates(df)

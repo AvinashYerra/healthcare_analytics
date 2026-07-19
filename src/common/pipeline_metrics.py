@@ -1,58 +1,40 @@
-from common.pipeline_metrics import PipelineMetrics
-
-from quality.data_quality import (
-    duplicate_count,
-    null_count,
-)
+import time
 
 
-class BasePipeline:
+class PipelineMetrics:
 
-    def __init__(
-        self,
-        reader,
-        writer,
-        transformer,
-    ):
+    def __init__(self):
 
-        self.reader = reader
-        self.writer = writer
-        self.transformer = transformer
+        self.start_time = time.time()
 
-    def execute(self, config):
+        self.input_records = 0
+        self.output_records = 0
 
-        metrics = PipelineMetrics()
+        self.duplicates = 0
+        self.null_primary_keys = 0
 
-        print(f"\nRunning {config['dataset']} pipeline...")
+        self.status = "SUCCESS"
 
-        # Read Bronze
-        df = self.reader.read(
-            config["input_path"],
-            config["schema"],
+    def finish(self):
+
+        self.execution_time = round(
+            time.time() - self.start_time,
+            2,
         )
 
-        metrics.input_records = df.count()
+    def report(self, dataset):
 
+        print("\n" + "=" * 60)
 
-        # Quality Metrics
-        metrics.duplicates = duplicate_count(df)
+        print(f"Dataset            : {dataset}")
+        print(f"Status             : {self.status}")
 
-        metrics.null_primary_keys = null_count(
-            df,
-            config["primary_key"],
-        )
+        print(f"Input Records      : {self.input_records}")
+        print(f"Output Records     : {self.output_records}")
 
-        # Transform
-        df = self.transformer.transform(df)
+        print(f"Duplicates         : {self.duplicates}")
+        print(f"Null Primary Keys  : {self.null_primary_keys}")
 
-        metrics.output_records = df.count()
+        print(f"Execution Time     : {self.execution_time} sec")
 
-        # Write Silver
-        self.writer.write(
-            df,
-            config["output_path"],
-        )
-
-        metrics.finish()
-
-        metrics.report(config["dataset"])
+        print("=" * 60)
