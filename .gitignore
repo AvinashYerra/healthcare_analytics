@@ -11,3 +11,5 @@ env
 .venv/
 /data/sample
 /data/output
+
+logs/
