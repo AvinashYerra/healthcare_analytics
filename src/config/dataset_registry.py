@@ -71,3 +71,8 @@ DATASETS = {
         "description": "Condition Master"
     },
 }
+
+
+DATASETS["patient_summary"] = {}
+DATASETS["provider_summary"] = {}
+DATASETS["organization_summary"] = {}

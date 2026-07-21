@@ -1,6 +1,9 @@
 import sys
 
 from pipelines.generic_pipeline import GenericPipeline
+from pipelines.patient_summary_pipeline import PatientSummaryPipeline
+from pipelines.provider_summary_pipeline import ProviderSummaryPipeline
+from pipelines.organization_summary_pipeline import OrganizationSummaryPipeline
 from config.dataset_registry import DATASETS
 
 
@@ -12,14 +15,22 @@ def run_pipeline(dataset):
             f"Available datasets: {list(DATASETS.keys())}"
         )
 
-    config = DATASETS[dataset]
+    if dataset == "patient_summary":
+        pipeline = PatientSummaryPipeline()
+        
+    elif dataset == "provider_summary":
+        pipeline = ProviderSummaryPipeline()
+        
+    elif dataset == "organization_summary":
+        pipeline = OrganizationSummaryPipeline()
+    else:
 
-    print(f"\nRunning {dataset} pipeline...\n")
-
-    pipeline = GenericPipeline(
-        dataset_name=dataset,
-        config=config,
-    )
+        config = DATASETS[dataset]
+        print(f"\nRunning {dataset} pipeline...\n")
+        pipeline = GenericPipeline(
+            dataset_name=dataset,
+            config=config,
+        )
 
     pipeline.run()
 

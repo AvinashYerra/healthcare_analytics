@@ -1,19 +1,19 @@
+import time
+
 from spark.session import create_spark_session
 from spark.silver_reader import SilverReader
 from spark.writer import ParquetWriter
-from transformations.silver_to_gold.patient_summary_transformer import (
-    PatientSummaryTransformer,
-)
 from common.pipeline_metrics import PipelineMetrics
 from config.paths import OUTPUT_DIR
+from transformations.silver_to_gold.provider_summary_transformer import ProviderSummaryTransformer
 
 
-class PatientSummaryPipeline:
+class ProviderSummaryPipeline:
 
     def run(self):
 
         spark = create_spark_session(
-            "Patient Summary Pipeline"
+            "Provider Summary Pipeline"
         )
 
         metrics = PipelineMetrics()
@@ -21,8 +21,8 @@ class PatientSummaryPipeline:
         reader = SilverReader(spark)
         writer = ParquetWriter()
 
-        patients = reader.read(
-            OUTPUT_DIR / "silver/patients"
+        providers = reader.read(
+            OUTPUT_DIR / "silver/providers"
         )
 
         encounters = reader.read(
@@ -33,25 +33,24 @@ class PatientSummaryPipeline:
             OUTPUT_DIR / "silver/conditions"
         )
 
-        metrics.input_records = patients.count()
+        metrics.input_records = providers.count()
 
-        transformer = PatientSummaryTransformer()
+        transformer = ProviderSummaryTransformer()
 
         summary = transformer.transform(
-            patients,
+            providers,
             encounters,
-            conditions,
         )
 
         metrics.output_records = summary.count()
 
         writer.write(
             summary,
-            OUTPUT_DIR / "gold/patient_summary"
+            OUTPUT_DIR / "gold/provider_summary"
         )
 
         metrics.finish()
 
-        metrics.report("patient_summary")
-
+        metrics.report("provider_summary")
+        # time.sleep(300) 
         spark.stop()

@@ -2,7 +2,7 @@ from pathlib import Path
 from pyspark.sql import DataFrame
 
 
-class SilverWriter:
+class ParquetWriter:
 
     def write(self, df: DataFrame, path):
 

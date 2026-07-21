@@ -1,6 +1,6 @@
 from spark.session import create_spark_session
-from spark.BronzeReader import BronzeReader
-from spark.SilverWriter import SilverWriter
+from spark.bronze_reader import BronzeReader
+from spark.writer import ParquetWriter
 from common.pipeline_metrics import PipelineMetrics
 from common.logger import get_logger
 
@@ -31,7 +31,7 @@ class GenericPipeline:
 
         metrics = PipelineMetrics()
         reader = BronzeReader(spark)
-        writer = SilverWriter()
+        writer = ParquetWriter()
         
 
         logger.info(f"Starting {self.dataset_name} pipeline")

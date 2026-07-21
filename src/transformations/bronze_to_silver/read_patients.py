@@ -1,5 +1,5 @@
 from spark.session import create_spark_session
-from spark.BronzeReader import read_csv
+from spark.bronze_reader import read_csv
 
 
 def main():
