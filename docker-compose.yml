@@ -21,7 +21,10 @@ services:
 
   airflow-init:
 
-    image: apache/airflow:2.9.3
+    build:
+      context: .
+
+    image: healthcare-airflow
 
     depends_on:
       postgres:
@@ -31,7 +34,6 @@ services:
       - .env
 
     environment:
-
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
 
     user: "${AIRFLOW_UID}:0"
@@ -56,7 +58,8 @@ services:
 
   airflow-webserver:
 
-    image: apache/airflow:2.9.3
+    image: healthcare-airflow
+
     restart: always
 
     depends_on:
@@ -67,7 +70,6 @@ services:
       - .env
 
     environment:
-
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
 
     user: "${AIRFLOW_UID}:0"
@@ -85,7 +87,7 @@ services:
 
   airflow-scheduler:
 
-    image: apache/airflow:2.9.3
+    image: healthcare-airflow
 
     restart: always
 
@@ -97,7 +99,6 @@ services:
       - .env
 
     environment:
-
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
 
     user: "${AIRFLOW_UID}:0"
@@ -111,5 +112,4 @@ services:
     command: airflow scheduler
 
 volumes:
-
   postgres-db-volume:

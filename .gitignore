@@ -12,5 +12,9 @@ env
 /data/sample
 /data/output
 
+*/__pycache__/
+
+*__pycache__*
 logs/
 .env
+
