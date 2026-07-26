@@ -7,6 +7,11 @@ from config.summary_registry import SUMMARIES
 
 from common.logger import get_logger
 
+from storage.deployment import DEPLOYMENT
+from storage.uploader import AzureUploader
+from config.dataset_registry import DATASETS  
+from config.summary_registry import SUMMARIES
+
 
 def main():
 
@@ -37,24 +42,55 @@ def main():
 
             logger.exception(e)
             failed.append(dataset)
+    if DEPLOYMENT["azure"]["silver"]:
+
+        print("\nUploading Silver Layer to Azure...\n")
+
+        uploader = AzureUploader()
+        for dataset, config in DATASETS.items():
+            uploader.upload_directory(
+                config["output_path"],
+                "silver",
+                dataset,
+            )
 
 
 
     print("\nRunning Silver → Gold Pipelines...\n")
 
-    for summary_name, pipeline in SUMMARIES.items():
+    for summary_name, config in SUMMARIES.items():
 
         logger.info(f"Running {summary_name} pipeline...")
 
         try:
 
-            pipeline.run()
+            config["pipeline"].run()
             successful += 1
 
         except Exception as e:
 
             logger.exception(e)
             failed.append(summary_name)
+
+
+    if DEPLOYMENT["azure"]["gold"]:
+
+        print("\nUploading Gold Layer to Azure...\n")
+
+        uploader = AzureUploader()
+        for summary_name, config in SUMMARIES.items():
+
+            logger.info(f"Uploading {summary_name} to Azure...")
+
+            uploader.upload_directory(
+
+                local_directory=config["output_path"],
+
+                container="gold",
+
+                dataset=summary_name,
+
+            )
 
     elapsed = round(time.time() - start, 2)
 

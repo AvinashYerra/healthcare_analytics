@@ -22,7 +22,7 @@ class GenericPipeline:
         schema = self.config["schema"]
         transformer = self.config["transformer"]
         input_path = self.config["bronze_path"]
-        output_path = self.config["silver_path"]
+        output_path = self.config["output_path"]
         logger = get_logger(self.dataset_name)
 
         spark = create_spark_session(

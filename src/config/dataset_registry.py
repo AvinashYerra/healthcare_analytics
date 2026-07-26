@@ -22,7 +22,7 @@ DATASETS = {
         "primary_key": "Id",
         "input_format": "csv",
         "bronze_path": SAMPLE_DATA_DIR / "patients.csv",
-        "silver_path": SILVER_DIR / "patients",
+        "output_path": SILVER_DIR / "patients",
         "partition_columns": [],
         "description": "Patient Master"
     },
@@ -33,7 +33,7 @@ DATASETS = {
         "primary_key": "Id",
         "input_format": "csv",
         "bronze_path": SAMPLE_DATA_DIR / "organizations.csv",
-        "silver_path": SILVER_DIR / "organizations",
+        "output_path": SILVER_DIR / "organizations",
         "partition_columns": [],
         "description": "Organization Master"
     },
@@ -44,7 +44,7 @@ DATASETS = {
         "primary_key": "Id",
         "input_format": "csv",
         "bronze_path": SAMPLE_DATA_DIR / "providers.csv",
-        "silver_path": SILVER_DIR / "providers",
+        "output_path": SILVER_DIR / "providers",
         "partition_columns": [],
         "description": "Provider Master"
     },
@@ -55,7 +55,7 @@ DATASETS = {
         "primary_key": "Id",
         "input_format": "csv",
         "bronze_path": SAMPLE_DATA_DIR / "encounters.csv",
-        "silver_path": SILVER_DIR / "encounters",
+        "output_path": SILVER_DIR / "encounters",
         "partition_columns": [],
         "description": "Encounter Master"
     },
@@ -66,7 +66,7 @@ DATASETS = {
         "primary_key": "Id",
         "input_format": "csv",
         "bronze_path": SAMPLE_DATA_DIR / "conditions.csv",
-        "silver_path": SILVER_DIR / "conditions",
+        "output_path": SILVER_DIR / "conditions",
         "partition_columns": [],
         "description": "Condition Master"
     },
