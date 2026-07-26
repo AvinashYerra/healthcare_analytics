@@ -1,9 +1,9 @@
 import sys
 
-from pipelines.generic_pipeline import GenericPipeline
-from pipelines.patient_summary_pipeline import PatientSummaryPipeline
-from pipelines.provider_summary_pipeline import ProviderSummaryPipeline
-from pipelines.organization_summary_pipeline import OrganizationSummaryPipeline
+from pipelines.bronze.generic_pipeline import GenericPipeline
+from pipelines.gold.patient_summary_pipeline import PatientSummaryPipeline
+from pipelines.gold.provider_summary_pipeline import ProviderSummaryPipeline
+from pipelines.gold.organization_summary_pipeline import OrganizationSummaryPipeline
 from config.dataset_registry import DATASETS
 
 
