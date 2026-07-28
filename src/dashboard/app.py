@@ -1,23 +1,33 @@
 import streamlit as st
 
+from dashboard.utils.sidebar import render_sidebar
+
+from dashboard.pages.overview import show_overview
+from dashboard.pages.patients import show_patients
+from dashboard.pages.providers import show_providers
+from dashboard.pages.organizations import show_organizations
+from dashboard.pages.etl_monitor import show_etl_monitor
+
+
 st.set_page_config(
     page_title="Healthcare Analytics",
     page_icon="🏥",
     layout="wide",
 )
 
-st.title("🏥 Healthcare Analytics Platform")
+page = render_sidebar()
 
-st.markdown(
-    """
-    End-to-End Healthcare Analytics built using
+if page == "Overview":
+    show_overview()
 
-    - PySpark
-    - DuckDB
-    - Azure Data Lake
-    - Airflow
-    - Streamlit
-    """
-)
+elif page == "Patients":
+    show_patients()
 
-st.success("Select a page from the sidebar.")
+elif page == "Providers":
+    show_providers()
+
+elif page == "Organizations":
+    show_organizations()
+
+else:
+    show_etl_monitor()
