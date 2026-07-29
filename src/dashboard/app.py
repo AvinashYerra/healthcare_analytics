@@ -2,12 +2,13 @@ import streamlit as st
 
 from dashboard.utils.sidebar import render_sidebar
 
-from dashboard.pages.overview import show_overview
-from dashboard.pages.patients import show_patients
-from dashboard.pages.providers import show_providers
-from dashboard.pages.organizations import show_organizations
-from dashboard.pages.etl_monitor import show_etl_monitor
-
+from dashboard.views.overview import show_overview
+from dashboard.views.patients import show_patients
+from dashboard.views.providers import show_providers
+from dashboard.views.organizations import show_organizations
+from dashboard.views.etl_monitor import show_etl_monitor
+from dashboard.components.filters import render_filters
+from analytics.analytics_service import AnalyticsService
 
 st.set_page_config(
     page_title="Healthcare Analytics",
@@ -15,19 +16,23 @@ st.set_page_config(
     layout="wide",
 )
 
+service = AnalyticsService()
+
 page = render_sidebar()
+# filters = render_filters(service)
+filters = None
 
 if page == "Overview":
-    show_overview()
+    show_overview(filters, service)
 
 elif page == "Patients":
-    show_patients()
+    show_patients(filters)
 
 elif page == "Providers":
-    show_providers()
+    show_providers(filters)
 
 elif page == "Organizations":
-    show_organizations()
+    show_organizations(filters)
 
-else:
-    show_etl_monitor()
+elif page == "ETL Monitor":
+    show_etl_monitor(filters)

@@ -4,7 +4,7 @@ from analytics.analytics_service import AnalyticsService
 from dashboard.components.charts import bar_chart
 
 
-def show_patients():
+def show_patients(filters):
 
     st.title("Patients")
 
@@ -26,5 +26,3 @@ def show_patients():
         chart,
         use_container_width=True,
     )
-
-    service.close()

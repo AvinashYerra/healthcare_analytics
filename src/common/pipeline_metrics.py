@@ -1,4 +1,7 @@
 import time
+import json
+from datetime import datetime
+from config.paths import METRICS_DIR
 
 
 class PipelineMetrics:
@@ -38,3 +41,48 @@ class PipelineMetrics:
         print(f"Execution Time     : {self.execution_time} sec")
 
         print("=" * 60)
+
+    def save(
+        self,
+        dataset,
+        layer,
+    ):
+
+        METRICS_DIR.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        metrics = {
+
+            "dataset": dataset,
+
+            "layer": layer,
+
+            "status": self.status,
+
+            "input_records": self.input_records,
+
+            "output_records": self.output_records,
+
+            "duplicates": self.duplicates,
+
+            "null_primary_keys": self.null_primary_keys,
+
+            "execution_time": self.execution_time,
+
+            "timestamp": datetime.now().strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        }
+
+        with open(
+            METRICS_DIR / f"{dataset}.json",
+            "w",
+        ) as f:
+
+            json.dump(
+                metrics,
+                f,
+                indent=4,
+            )

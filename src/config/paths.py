@@ -20,6 +20,8 @@ SILVER_DIR = OUTPUT_DIR / "silver"
 
 GOLD_DIR = OUTPUT_DIR / "gold"
 
+METRICS_DIR = OUTPUT_DIR/ "metrics"
+
 
 today = datetime.today()
 

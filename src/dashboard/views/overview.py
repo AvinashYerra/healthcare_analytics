@@ -4,22 +4,24 @@ from analytics.analytics_service import AnalyticsService
 from dashboard.components.charts import bar_chart
 
 
-def show_overview():
-    service = AnalyticsService()
+def show_overview(filters, service):
 
     patients = service.execute(
         "overview",
         "total_patients",
+        filters,
     ).iloc[0, 0]
 
     providers = service.execute(
         "overview",
         "total_providers",
+        filters,
     ).iloc[0, 0]
 
     organizations = service.execute(
         "overview",
         "total_organizations",
+        filters,
     ).iloc[0, 0]
 
     st.title("Overview")
@@ -44,17 +46,20 @@ def show_overview():
     gender = service.execute(
         "patients",
         "gender_distribution",
+        filters,
     )
 
 
     provider_df = service.execute(
         "providers",
         "top_providers",
+        filters,
     )
 
     organization_df = service.execute(
         "organizations",
         "top_organizations",
+        filters,
     )
 
 
@@ -101,7 +106,3 @@ def show_overview():
         organization_chart,
         use_container_width=True,
     )
-
-
-
-    service.close()

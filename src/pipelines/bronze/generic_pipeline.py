@@ -55,5 +55,6 @@ class GenericPipeline:
         metrics.finish()
 
         metrics.report(self.dataset_name)
+        metrics.save(self.dataset_name, "silver",)
         logger.info(f"{self.dataset_name} pipeline completed")
         spark.stop()

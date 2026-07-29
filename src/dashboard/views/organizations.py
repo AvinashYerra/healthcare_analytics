@@ -5,7 +5,7 @@ from dashboard.components.charts import bar_chart
 
 
 
-def show_organizations():
+def show_organizations(filters):
 
     st.title("Organizations")
 
@@ -28,5 +28,3 @@ def show_organizations():
         chart,
         use_container_width=True,
     )
-
-    service.close()

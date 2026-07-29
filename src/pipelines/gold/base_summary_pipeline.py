@@ -44,6 +44,7 @@ class BaseSummaryPipeline:
 
         metrics.finish()
         metrics.report(self.pipeline_name)
+        metrics.save(self.pipeline_name, "gold",)
 
         logger.info(f"{self.pipeline_name} completed")
 
