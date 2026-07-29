@@ -13,19 +13,12 @@ from config.dataset_registry import DATASETS
 from config.summary_registry import SUMMARIES
 
 
-def main():
+def run_bronze_to_silver():
 
-    start = time.time()
-
-    logger = get_logger("orchestrator")
-
-    print("\n" + "=" * 60)
-    print("Healthcare Analytics ETL")
-    print("=" * 60)
+    logger = get_logger("bronze_to_silver")
 
     successful = 0
     failed = []
-
 
     print("\nRunning Bronze → Silver Pipelines...\n")
 
@@ -34,27 +27,44 @@ def main():
         logger.info(f"Running {dataset} pipeline...")
 
         try:
-
             run_pipeline(dataset)
             successful += 1
 
         except Exception as e:
-
             logger.exception(e)
             failed.append(dataset)
-    if DEPLOYMENT["azure"]["silver"]:
 
-        print("\nUploading Silver Layer to Azure...\n")
-
-        uploader = AzureUploader()
-        for dataset, config in DATASETS.items():
-            uploader.upload_directory(
-                config["output_path"],
-                "silver",
-                dataset,
-            )
+    return successful, failed
 
 
+def upload_silver():
+
+    if not DEPLOYMENT["azure"]["silver"]:
+        return
+
+    logger = get_logger("silver_upload")
+
+    print("\nUploading Silver Layer to Azure...\n")
+
+    uploader = AzureUploader()
+
+    for dataset, config in DATASETS.items():
+
+        logger.info(f"Uploading {dataset}")
+
+        uploader.upload_directory(
+            config["output_path"],
+            "silver",
+            dataset,
+        )
+
+
+def run_silver_to_gold():
+
+    logger = get_logger("silver_to_gold")
+
+    successful = 0
+    failed = []
 
     print("\nRunning Silver → Gold Pipelines...\n")
 
@@ -72,25 +82,53 @@ def main():
             logger.exception(e)
             failed.append(summary_name)
 
+    return successful, failed
 
-    if DEPLOYMENT["azure"]["gold"]:
 
-        print("\nUploading Gold Layer to Azure...\n")
+def upload_gold():
 
-        uploader = AzureUploader()
-        for summary_name, config in SUMMARIES.items():
+    if not DEPLOYMENT["azure"]["gold"]:
+        return
 
-            logger.info(f"Uploading {summary_name} to Azure...")
+    logger = get_logger("gold_upload")
 
-            uploader.upload_directory(
+    print("\nUploading Gold Layer to Azure...\n")
 
-                local_directory=config["output_path"],
+    uploader = AzureUploader()
 
-                container="gold",
+    for summary_name, config in SUMMARIES.items():
 
-                dataset=summary_name,
+        logger.info(f"Uploading {summary_name}")
 
-            )
+        uploader.upload_directory(
+            local_directory=config["output_path"],
+            container="gold",
+            dataset=summary_name,
+        )
+
+
+def main():
+
+    start = time.time()
+
+    print("\n" + "=" * 60)
+    print("Healthcare Analytics ETL")
+    print("=" * 60)
+
+    successful = 0
+    failed = []
+
+    success, errors = run_bronze_to_silver()
+    successful += success
+    failed.extend(errors)
+
+    upload_silver()
+
+    success, errors = run_silver_to_gold()
+    successful += success
+    failed.extend(errors)
+
+    upload_gold()
 
     elapsed = round(time.time() - start, 2)
 
@@ -102,14 +140,10 @@ def main():
     print(f"Execution Time       : {elapsed} sec")
 
     if failed:
-
         print("\nFailed Pipelines:")
-
         for pipeline in failed:
             print(f" - {pipeline}")
 
     print("=" * 60)
 
-
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()

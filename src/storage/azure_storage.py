@@ -1,10 +1,11 @@
-from azure.identity import DefaultAzureCredential
+from azure.identity import ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 
 from config.azure import (
     STORAGE_ACCOUNT_NAME,
     CONTAINERS,
 )
+import os
 
 
 class AzureStorage:
@@ -14,10 +15,15 @@ class AzureStorage:
         account_url = (
             f"https://{STORAGE_ACCOUNT_NAME}.dfs.core.windows.net"
         )
-
+        self.credential = ClientSecretCredential(
+                    tenant_id=os.environ["AZURE_TENANT_ID"],
+                    client_id=os.environ["AZURE_CLIENT_ID"],
+                    client_secret=os.environ["AZURE_CLIENT_SECRET"],
+                )
+        
         self.service = DataLakeServiceClient(
             account_url=account_url,
-            credential=DefaultAzureCredential(),
+            credential=self.credential,
         )
 
     def get_container(self, layer):

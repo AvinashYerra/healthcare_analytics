@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from azure.identity import DefaultAzureCredential
+from azure.identity import ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 
 from ingestion.config import (
@@ -8,6 +8,8 @@ from ingestion.config import (
     FILE_SYSTEM_NAME,
     UPLOAD_DIRECTORY,
 )
+import os
+
 
 
 class AzureDataLakeUploader:
@@ -16,7 +18,12 @@ class AzureDataLakeUploader:
             f"https://{STORAGE_ACCOUNT_NAME}.dfs.core.windows.net"
         )
 
-        self.credential = DefaultAzureCredential()
+        self.credential = ClientSecretCredential(
+            tenant_id=os.environ["AZURE_TENANT_ID"],
+            client_id=os.environ["AZURE_CLIENT_ID"],
+            client_secret=os.environ["AZURE_CLIENT_SECRET"],
+        )
+
 
         self.service_client = DataLakeServiceClient(
             account_url=self.account_url,
