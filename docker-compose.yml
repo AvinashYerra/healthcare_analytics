@@ -4,6 +4,8 @@ services:
     image: postgres:16
     container_name: airflow-postgres
 
+    restart: unless-stopped
+
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -15,13 +17,21 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
+      timeout: 5s
       retries: 5
 
+    networks:
+      - healthcare-network
+
+
   airflow-init:
+
     build:
       context: .
 
     image: healthcare-airflow
+
+    container_name: airflow-init
 
     depends_on:
       postgres:
@@ -54,10 +64,17 @@ services:
       --email admin@example.com
       "
 
+    networks:
+      - healthcare-network
+
+
   airflow-webserver:
+
     image: healthcare-airflow
 
-    restart: always
+    container_name: airflow-webserver
+
+    restart: unless-stopped
 
     depends_on:
       airflow-init:
@@ -83,10 +100,24 @@ services:
 
     command: airflow webserver
 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+    networks:
+      - healthcare-network
+
+
   airflow-scheduler:
+
     image: healthcare-airflow
 
-    restart: always
+    container_name: airflow-scheduler
+
+    restart: unless-stopped
 
     depends_on:
       airflow-init:
@@ -109,5 +140,56 @@ services:
 
     command: airflow scheduler
 
+    networks:
+      - healthcare-network
+
+
+  streamlit:
+
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+
+    image: healthcare-dashboard
+
+    container_name: healthcare-dashboard
+
+    restart: unless-stopped
+
+    depends_on:
+      airflow-webserver:
+        condition: service_healthy
+
+    working_dir: /app
+
+    volumes:
+      - .:/app
+
+    environment:
+      PYTHONPATH: /app/src
+
+    ports:
+      - "8501:8501"
+
+    command: >
+      streamlit run src/dashboard/app.py
+      --server.address=0.0.0.0
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+    networks:
+      - healthcare-network
+
+
 volumes:
   postgres-db-volume:
+
+
+networks:
+  healthcare-network:
+    driver: bridge
