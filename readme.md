@@ -358,19 +358,23 @@ A template configuration is provided:
 
 ## Airflow DAG
 
-> Add screenshot here
+![alt text](image.png)
 
 ---
 
 ## Dashboard
 
-> Add screenshot here
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
 
 ---
 
 ## ETL Monitor
 
-> Add screenshot here
+![alt text](image-4.png)
 
 ---
 
